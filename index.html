@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LifeOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceff6;--card:#fff;--ink:#20244a;--mute:#6b7094;--line:#d9ddec;--acc:#5b4bdb;--acc-t:#e6e3fb;--sun:#f2a516;--ok:#2e9e6b}
+@media(prefers-color-scheme:dark){:root{--bg:#14162b;--card:#1d2040;--ink:#eceefb;--mute:#9a9fc8;--line:#2d3160;--acc:#8b7dff;--acc-t:#2b2859;--sun:#f5b73c;--ok:#4cc38a}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Bricolage Grotesque",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;display:flex;min-height:100vh}
+nav{width:200px;padding:28px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+nav h1{font-size:26px;font-weight:800;margin:0 0 20px 10px;letter-spacing:-.03em}
+nav h1 span{color:var(--acc)}
+nav button{font:inherit;text-align:left;background:none;border:0;color:var(--mute);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+nav button:hover{background:var(--acc-t)}
+nav button.on{background:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+main{flex:1;padding:36px 32px 80px;max-width:820px}
+h2{font-size:34px;font-weight:800;letter-spacing:-.03em;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 24px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.big{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.mute{color:var(--mute);font-size:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+input[type=range]{padding:0;accent-color:var(--acc);flex:1;min-width:120px}
+textarea{width:100%;min-height:90px;resize:vertical}
+.btn{font:inherit;font-weight:600;background:var(--acc);color:#fff;border:0;border-radius:10px;padding:9px 16px;cursor:pointer}
+.btn.ghost{background:var(--acc-t);color:var(--acc)}
+.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:18px;padding:2px 8px}
+.item{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-of-type{border-top:0}
+.item .name{flex:1}
+.chk{width:24px;height:24px;accent-color:var(--ok);cursor:pointer}
+.dots{display:flex;gap:4px}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.dots i.d{background:var(--ok)}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px;border-bottom:1px solid var(--line);padding-top:8px}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:12px;color:var(--mute)}
+.bar div{width:100%;background:var(--acc);border-radius:8px 8px 0 0;min-height:3px}
+.bar.low div{background:var(--sun)}
+.bar b{font-size:12px;color:var(--ink);margin-bottom:3px}
+.days{display:flex;gap:8px;margin-top:6px}.days span{flex:1;text-align:center;font-size:12px;color:var(--mute)}
+.moods{display:flex;gap:8px}
+.moods button{font-size:26px;background:var(--bg);border:2px solid transparent;border-radius:12px;padding:6px 10px;cursor:pointer}
+.moods button.on{border-color:var(--acc);background:var(--acc-t)}
+.prog{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
+.prog div{height:100%;background:var(--acc)}
+.empty{color:var(--mute);padding:6px 0}
+@media(max-width:720px){
+ body{flex-direction:column}
+ nav{position:fixed;bottom:0;left:0;right:0;top:auto;width:100%;height:auto;flex-direction:row;padding:6px;background:var(--card);border-top:1px solid var(--line);z-index:5;justify-content:space-around}
+ nav h1{display:none}nav button{padding:10px 8px;font-size:13px;text-align:center}
+ main{padding:24px 16px 100px}h2{font-size:28px}
+}
+@media(prefers-reduced-motion:no-preference){.prog div{transition:width .3s}}
+</style>
+</head>
+<body>
+<nav aria-label="Sections">
+ <h1>Life<span>OS</span></h1>
+ <button data-t="today" class="on">Today</button>
+ <button data-t="sleep">Sleep</button>
+ <button data-t="routines">Routines</button>
+ <button data-t="goals">Goals</button>
+ <button data-t="journal">Journal</button>
+ <button data-t="data">Data</button>
+</nav>
+<main>
+<section id="today" class="on"></section>
+
+<section id="sleep">
+ <h2>Sleep</h2><p class="sub">Log last night. Bars show the last 7 entries.</p>
+ <div class="card"><div class="row">
+  <label>Bedtime <input type="time" id="bed" value="23:00"></label>
+  <label>Wake <input type="time" id="wake" value="07:00"></label>
+  <label>Quality <input type="range" id="sq" min="1" max="5" value="3"></label>
+  <button class="btn" id="addSleep">Save sleep</button>
+ </div></div>
+ <div class="card"><h3>Last 7 nights</h3><div id="sleepChart"></div></div>
+ <div class="card"><h3>History</h3><div id="sleepList"></div></div>
+</section>
+
+<section id="routines">
+ <h2>Routines</h2><p class="sub">Check things off each day. Dots show the last 7 days.</p>
+ <div class="card"><div class="row"><input id="rName" placeholder="e.g. Morning stretch" style="flex:1"><button class="btn" id="addRoutine">Add routine</button></div></div>
+ <div class="card" id="routineList"></div>
+</section>
+
+<section id="goals">
+ <h2>Goals</h2><p class="sub">Set a goal, drag the slider as you progress.</p>
+ <div class="card"><div class="row"><input id="gName" placeholder="e.g. Run a 10K" style="flex:1"><input type="date" id="gDue"><button class="btn" id="addGoal">Add goal</button></div></div>
+ <div id="goalList"></div>
+</section>
+
+<section id="journal">
+ <h2>Journal</h2><p class="sub">How did today feel?</p>
+ <div class="card">
+  <div class="moods" id="moods"></div><br>
+  <textarea id="jNote" placeholder="Write a few lines about your day…"></textarea><br><br>
+  <button class="btn" id="saveJ">Save entry</button>
+ </div>
+ <div class="card"><h3>Past entries</h3><div id="jList"></div></div>
+</section>
+
+<section id="data">
+ <h2>Data</h2><p class="sub">Everything is saved in this browser only. Export a backup now and then.</p>
+ <div class="card row">
+  <button class="btn" id="exp">Export backup</button>
+  <label class="btn ghost" style="cursor:pointer">Import backup<input type="file" id="imp" accept=".json" hidden></label>
+  <button class="btn ghost" id="reset">Erase everything</button>
+ </div>
+</section>
+</main>
+
+<script>
+const KEY="lifeos.v1";
+const MOODS=["😞","😕","😐","🙂","😄"];
+const $=s=>document.querySelector(s);
+const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
+const today=()=>iso(new Date());
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let S={sleep:[],routines:[],goals:[],journal:{}};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()};
+const last7=()=>[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return iso(d)});
+const hrs=m=>(m/60).toFixed(1);
+const dayName=d=>new Date(d+"T12:00").toLocaleDateString(undefined,{weekday:"short"});
+const streak=r=>{let n=0,d=new Date();if(!r.done[iso(d)])d.setDate(d.getDate()-1);while(r.done[iso(d)]){n++;d.setDate(d.getDate()-1)}return n};
+let mood=0;
+
+// navigation
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("nav button,section").forEach(e=>e.classList.remove("on"));
+ b.classList.add("on");$("#"+b.dataset.t).classList.add("on");location.hash=b.dataset.t;window.scrollTo(0,0)});
+if(location.hash){const b=document.querySelector(`nav button[data-t="${location.hash.slice(1)}"]`);if(b)b.click()}
+
+// sleep
+$("#addSleep").onclick=()=>{
+ const [bh,bm]=$("#bed").value.split(":").map(Number),[wh,wm]=$("#wake").value.split(":").map(Number);
+ let m=(wh*60+wm)-(bh*60+bm);if(m<=0)m+=1440;
+ S.sleep=S.sleep.filter(s=>s.date!==today());
+ S.sleep.push({date:today(),mins:m,q:+$("#sq").value,bed:$("#bed").value,wake:$("#wake").value});
+ S.sleep.sort((a,b)=>a.date<b.date?-1:1);save()};
+// routines
+$("#addRoutine").onclick=()=>{const n=$("#rName").value.trim();if(!n)return;S.routines.push({id:uid(),name:n,done:{}});$("#rName").value="";save()};
+// goals
+$("#addGoal").onclick=()=>{const n=$("#gName").value.trim();if(!n)return;S.goals.push({id:uid(),name:n,due:$("#gDue").value,p:0});$("#gName").value="";save()};
+// journal
+$("#moods").innerHTML=MOODS.map((m,i)=>`<button data-m="${i+1}" aria-label="Mood ${i+1} of 5">${m}</button>`).join("");
+$("#moods").onclick=e=>{const b=e.target.closest("button");if(!b)return;mood=+b.dataset.m;paintMood()};
+const paintMood=()=>document.querySelectorAll("#moods button").forEach(b=>b.classList.toggle("on",+b.dataset.m===mood));
+$("#saveJ").onclick=()=>{S.journal[today()]={mood,note:$("#jNote").value};save()};
+// data
+$("#exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));a.download="lifeos-backup-"+today()+".json";a.click()};
+$("#imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{S=Object.assign({sleep:[],routines:[],goals:[],journal:{}},JSON.parse(t));save();alert("Backup imported.")}catch(x){alert("That file isn't a valid LifeOS backup.")}})};
+$("#reset").onclick=()=>{if(confirm("Erase all LifeOS data in this browser?")){S={sleep:[],routines:[],goals:[],journal:{}};save()}};
+
+// delegated actions
+document.addEventListener("click",e=>{
+ const t=e.target;
+ if(t.dataset.delr){S.routines=S.routines.filter(r=>r.id!==t.dataset.delr);save()}
+ if(t.dataset.delg){S.goals=S.goals.filter(g=>g.id!==t.dataset.delg);save()}
+ if(t.dataset.dels){S.sleep=S.sleep.filter(s=>s.date!==t.dataset.dels);save()}
+});
+document.addEventListener("change",e=>{
+ const t=e.target;
+ if(t.dataset.chk){const r=S.routines.find(r=>r.id===t.dataset.chk);if(t.checked)r.done[today()]=1;else delete r.done[today()];save()}
+});
+document.addEventListener("input",e=>{
+ const t=e.target;
+ if(t.dataset.prog){const g=S.goals.find(g=>g.id===t.dataset.prog);g.p=+t.value;
+  t.closest(".card").querySelector(".prog div").style.width=g.p+"%";t.closest(".card").querySelector(".pv").textContent=g.p+"%";
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(x){}}
+});
+
+const routineRow=r=>`<div class="item"><input type="checkbox" class="chk" data-chk="${r.id}" ${r.done[today()]?"checked":""} aria-label="Done today: ${esc(r.name)}">
+ <span class="name">${esc(r.name)}<div class="mute">${streak(r)}-day streak</div></span>
+ <div class="dots">${last7().map(d=>`<i class="${r.done[d]?"d":""}" title="${d}"></i>`).join("")}</div>
+ <button class="x" data-delr="${r.id}" aria-label="Delete ${esc(r.name)}">×</button></div>`;
+
+function render(){
+ const t=today(),ls=S.sleep.find(s=>s.date===t)||S.sleep[S.sleep.length-1];
+ const doneN=S.routines.filter(r=>r.done[t]).length;
+ const avgG=S.goals.length?Math.round(S.goals.reduce((a,g)=>a+g.p,0)/S.goals.length):0;
+ const h=new Date().getHours(),greet=h<12?"Good morning":h<18?"Good afternoon":"Good evening";
+ $("#today").innerHTML=`<h2>${greet}</h2><p class="sub">${new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</p>
+ <div class="grid">
+  <div class="card"><div class="mute">Last sleep</div><div class="big">${ls?hrs(ls.mins)+"h":"–"}</div><div class="mute">${ls?"Quality "+ls.q+"/5":"Nothing logged yet"}</div></div>
+  <div class="card"><div class="mute">Routines today</div><div class="big">${doneN}/${S.routines.length}</div><div class="mute">completed</div></div>
+  <div class="card"><div class="mute">Goal progress</div><div class="big">${avgG}%</div><div class="mute">${S.goals.length} active goal${S.goals.length==1?"":"s"}</div></div>
+ </div><br>
+ <div class="card"><h3>Today's routines</h3>${S.routines.length?S.routines.map(routineRow).join(""):'<div class="empty">No routines yet. Add one in the Routines tab.</div>'}</div>`;
+
+ const l7=S.sleep.slice(-7),max=Math.max(10,...l7.map(s=>s.mins/60));
+ $("#sleepChart").innerHTML=l7.length?`<div class="bars">${l7.map(s=>`<div class="bar ${s.mins<420?"low":""}"><b>${hrs(s.mins)}</b><div style="height:${(s.mins/60)/max*100}%"></div></div>`).join("")}</div>
+  <div class="days">${l7.map(s=>`<span>${dayName(s.date)}</span>`).join("")}</div>
+  <p class="mute">Average ${hrs(l7.reduce((a,s)=>a+s.mins,0)/l7.length)}h. Amber bars are under 7 hours.</p>`:'<div class="empty">Save your first night above to see the chart.</div>';
+ $("#sleepList").innerHTML=S.sleep.length?[...S.sleep].reverse().slice(0,14).map(s=>`<div class="item"><span class="name">${s.date}<div class="mute">${s.bed} to ${s.wake}, quality ${s.q}/5</div></span><b>${hrs(s.mins)}h</b><button class="x" data-dels="${s.date}" aria-label="Delete">×</button></div>`).join(""):'<div class="empty">No entries yet.</div>';
+
+ $("#routineList").innerHTML=S.routines.length?S.routines.map(routineRow).join(""):'<div class="empty">Add your first routine above.</div>';
+
+ $("#goalList").innerHTML=S.goals.length?S.goals.map(g=>{
+  const left=g.due?Math.ceil((new Date(g.due+"T12:00")-new Date())/864e5):null;
+  return `<div class="card"><div class="row"><b style="flex:1">${esc(g.name)}</b><span class="pv">${g.p}%</span><button class="x" data-delg="${g.id}" aria-label="Delete goal">×</button></div>
+  <div class="mute">${left===null?"No deadline":left>=0?left+" days left":"Past due by "+(-left)+" days"}</div>
+  <div class="prog"><div style="width:${g.p}%"></div></div><br><input type="range" min="0" max="100" value="${g.p}" data-prog="${g.id}" aria-label="Progress for ${esc(g.name)}" style="width:100%"></div>`}).join(""):'<div class="card empty">No goals yet. Add one above.</div>';
+
+ const j=S.journal[t];if(j&&!$("#jNote").value){$("#jNote").value=j.note;mood=j.mood}paintMood();
+ const dates=Object.keys(S.journal).sort().reverse();
+ $("#jList").innerHTML=dates.length?dates.map(d=>`<div class="item"><span style="font-size:24px">${MOODS[(S.journal[d].mood||3)-1]}</span><span class="name"><b>${d}</b><div class="mute">${esc(S.journal[d].note||"")}</div></span></div>`).join(""):'<div class="empty">Your entries will show up here.</div>';
+}
+render();
+</script>
+</body>
+</html>
