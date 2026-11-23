@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LifeOS</title>
+<title>No Distractions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
@@ -13,7 +13,7 @@
 html,body{margin:0}
 body{font-family:"Bricolage Grotesque",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;display:flex;min-height:100vh}
 nav{width:200px;padding:28px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-nav h1{font-size:26px;font-weight:800;margin:0 0 20px 10px;letter-spacing:-.03em}
+nav h1{font-size:21px;line-height:1.1;font-weight:800;margin:0 0 20px 10px;letter-spacing:-.03em}
 nav h1 span{color:var(--acc)}
 nav button{font:inherit;text-align:left;background:none;border:0;color:var(--mute);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:600}
 nav button:hover{background:var(--acc-t)}
@@ -29,7 +29,7 @@ section{display:none}section.on{display:block}
 .big{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}
 .mute{color:var(--mute);font-size:14px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
 input[type=range]{padding:0;accent-color:var(--acc);flex:1;min-width:120px}
 textarea{width:100%;min-height:90px;resize:vertical}
 .btn{font:inherit;font-weight:600;background:var(--acc);color:#fff;border:0;border-radius:10px;padding:9px 16px;cursor:pointer}
@@ -54,6 +54,13 @@ textarea{width:100%;min-height:90px;resize:vertical}
 .prog{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
 .prog div{height:100%;background:var(--acc)}
 .empty{color:var(--mute);padding:6px 0}
+#welcome{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+#welcome[hidden]{display:none}
+.wcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;max-width:420px;width:100%}
+.wcard h1{font-size:32px;margin:0 0 8px;letter-spacing:-.03em;line-height:1.1}.wcard h1 span{color:var(--acc)}
+.wcard label{display:block;margin-bottom:12px;font-weight:600}
+.wcard input:not([type=checkbox]),.wcard select{width:100%;margin-top:4px}
+.wcard .chkrow{display:flex;gap:10px;font-weight:400;font-size:14px}
 @media(max-width:720px){
  body{flex-direction:column}
  nav{position:fixed;bottom:0;left:0;right:0;top:auto;width:100%;height:auto;flex-direction:row;padding:6px;background:var(--card);border-top:1px solid var(--line);z-index:5;justify-content:space-around}
@@ -65,13 +72,14 @@ textarea{width:100%;min-height:90px;resize:vertical}
 </head>
 <body>
 <nav aria-label="Sections">
- <h1>Life<span>OS</span></h1>
+ <h1>No <span>Distractions</span></h1>
  <button data-t="today" class="on">Today</button>
  <button data-t="sleep">Sleep</button>
  <button data-t="routines">Routines</button>
  <button data-t="goals">Goals</button>
+ <button data-t="faith">Faith</button>
  <button data-t="journal">Journal</button>
- <button data-t="data">Data</button>
+ <button data-t="data" id="navData" hidden>Data</button>
 </nav>
 <main>
 <section id="today" class="on"></section>
@@ -100,6 +108,14 @@ textarea{width:100%;min-height:90px;resize:vertical}
  <div id="goalList"></div>
 </section>
 
+<section id="faith">
+ <h2>Faith</h2><p class="sub">Spend a little time with God each day.</p>
+ <div class="card"><h3 id="vRef"></h3><p id="vText" style="font-size:19px;margin:0"></p><p class="mute">King James Version</p></div>
+ <div class="card"><h3>Today's reading</h3><div class="row"><input id="fPass" placeholder="e.g. John 3" style="flex:1"><button class="btn" id="fRead">Mark as read</button></div><p class="mute" id="fStreak"></p></div>
+ <div class="card"><h3>Prayer list</h3><div class="row"><input id="pr" placeholder="Who or what are you praying for?" style="flex:1"><button class="btn" id="addPr">Add prayer</button></div><div id="prList"></div></div>
+ <div class="card"><h3>Gratitude</h3><textarea id="gr" placeholder="What are you thankful to God for today?"></textarea><br><br><button class="btn" id="saveGr">Save gratitude</button></div>
+</section>
+
 <section id="journal">
  <h2>Journal</h2><p class="sub">How did today feel?</p>
  <div class="card">
@@ -111,7 +127,7 @@ textarea{width:100%;min-height:90px;resize:vertical}
 </section>
 
 <section id="data">
- <h2>Data</h2><p class="sub">Everything is saved in this browser only. Export a backup now and then.</p>
+ <h2>Data</h2><p class="sub">Owner only. Everything is saved in this browser, so back up now and then.</p>
  <div class="card row">
   <button class="btn" id="exp">Export backup</button>
   <label class="btn ghost" style="cursor:pointer">Import backup<input type="file" id="imp" accept=".json" hidden></label>
@@ -120,15 +136,30 @@ textarea{width:100%;min-height:90px;resize:vertical}
 </section>
 </main>
 
+<div id="welcome" hidden><div class="wcard">
+ <h1>No <span>Distractions</span></h1>
+ <p class="mute">Sleep, routines, goals and faith in one calm place. Tell us who you are to get started.</p>
+ <label>First name<input id="pName" autocomplete="given-name"></label>
+ <label>Email<input id="pEmail" type="email" autocomplete="email"></label>
+ <label>What do you want to focus on first?<select id="pFocus"><option value="today">Daily overview</option><option value="sleep">Sleep</option><option value="routines">Routines</option><option value="goals">Goals</option><option value="faith">Faith</option><option value="journal">Journal</option></select></label>
+ <label class="chkrow"><input type="checkbox" id="pOk" class="chk"> I agree that my name and email can be used to contact me about No Distractions.</label>
+ <p id="pErr" class="mute" role="alert" style="color:#c0392b"></p>
+ <button class="btn" id="pGo">Get started</button>
+</div></div>
 <script>
 const KEY="lifeos.v1";
+// Owner passcode (SHA-256 hash). Default passcode: ChangeMe2026 -- replace the hash with your own.
+const OWNER_HASH="9a121fc874029e54c9a5cdc28436af9787e1b2351bc8236a3f88b105b0c08f45";
+// Optional: paste a Formspree URL (https://formspree.io/f/xxxx) to receive sign-ups by email.
+const FORM_ENDPOINT="";
+let owner=false;
 const MOODS=["😞","😕","😐","🙂","😄"];
 const $=s=>document.querySelector(s);
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const today=()=>iso(new Date());
 const uid=()=>Math.random().toString(36).slice(2,9);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let S={sleep:[],routines:[],goals:[],journal:{}};
+const D=()=>({sleep:[],routines:[],goals:[],journal:{},faith:{read:{},prayers:[],grat:{}},profile:null});let S=D();
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()};
 const last7=()=>[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return iso(d)});
@@ -139,6 +170,7 @@ let mood=0;
 
 // navigation
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ if(b.dataset.t==="data"&&!owner)return;
  document.querySelectorAll("nav button,section").forEach(e=>e.classList.remove("on"));
  b.classList.add("on");$("#"+b.dataset.t).classList.add("on");location.hash=b.dataset.t;window.scrollTo(0,0)});
 if(location.hash){const b=document.querySelector(`nav button[data-t="${location.hash.slice(1)}"]`);if(b)b.click()}
@@ -161,8 +193,8 @@ const paintMood=()=>document.querySelectorAll("#moods button").forEach(b=>b.clas
 $("#saveJ").onclick=()=>{S.journal[today()]={mood,note:$("#jNote").value};save()};
 // data
 $("#exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));a.download="lifeos-backup-"+today()+".json";a.click()};
-$("#imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{S=Object.assign({sleep:[],routines:[],goals:[],journal:{}},JSON.parse(t));save();alert("Backup imported.")}catch(x){alert("That file isn't a valid LifeOS backup.")}})};
-$("#reset").onclick=()=>{if(confirm("Erase all LifeOS data in this browser?")){S={sleep:[],routines:[],goals:[],journal:{}};save()}};
+$("#imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{S=Object.assign(D(),JSON.parse(t));save();alert("Backup imported.")}catch(x){alert("That file isn't a valid LifeOS backup.")}})};
+$("#reset").onclick=()=>{if(confirm("Erase all No Distractions data in this browser?")){S=D();save()}};
 
 // delegated actions
 document.addEventListener("click",e=>{
@@ -170,9 +202,12 @@ document.addEventListener("click",e=>{
  if(t.dataset.delr){S.routines=S.routines.filter(r=>r.id!==t.dataset.delr);save()}
  if(t.dataset.delg){S.goals=S.goals.filter(g=>g.id!==t.dataset.delg);save()}
  if(t.dataset.dels){S.sleep=S.sleep.filter(s=>s.date!==t.dataset.dels);save()}
+ if(t.dataset.delp){S.faith.prayers=S.faith.prayers.filter(p=>p.id!==t.dataset.delp);save()}
+ if(t.id==="editProfile")showWelcome();
 });
 document.addEventListener("change",e=>{
  const t=e.target;
+ if(t.dataset.pr){S.faith.prayers.find(p=>p.id===t.dataset.pr).done=t.checked;save()}
  if(t.dataset.chk){const r=S.routines.find(r=>r.id===t.dataset.chk);if(t.checked)r.done[today()]=1;else delete r.done[today()];save()}
 });
 document.addEventListener("input",e=>{
@@ -192,13 +227,14 @@ function render(){
  const doneN=S.routines.filter(r=>r.done[t]).length;
  const avgG=S.goals.length?Math.round(S.goals.reduce((a,g)=>a+g.p,0)/S.goals.length):0;
  const h=new Date().getHours(),greet=h<12?"Good morning":h<18?"Good afternoon":"Good evening";
- $("#today").innerHTML=`<h2>${greet}</h2><p class="sub">${new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</p>
+ $("#today").innerHTML=`<h2>${greet}, ${esc(S.profile?S.profile.name:"friend")}</h2><p class="sub">${new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</p>
  <div class="grid">
   <div class="card"><div class="mute">Last sleep</div><div class="big">${ls?hrs(ls.mins)+"h":"–"}</div><div class="mute">${ls?"Quality "+ls.q+"/5":"Nothing logged yet"}</div></div>
   <div class="card"><div class="mute">Routines today</div><div class="big">${doneN}/${S.routines.length}</div><div class="mute">completed</div></div>
   <div class="card"><div class="mute">Goal progress</div><div class="big">${avgG}%</div><div class="mute">${S.goals.length} active goal${S.goals.length==1?"":"s"}</div></div>
  </div><br>
- <div class="card"><h3>Today's routines</h3>${S.routines.length?S.routines.map(routineRow).join(""):'<div class="empty">No routines yet. Add one in the Routines tab.</div>'}</div>`;
+ <div class="card"><h3>Today's routines</h3>${S.routines.length?S.routines.map(routineRow).join(""):'<div class="empty">No routines yet. Add one in the Routines tab.</div>'}</div>
+ <button class="btn ghost" id="editProfile">Edit profile</button>`;
 
  const l7=S.sleep.slice(-7),max=Math.max(10,...l7.map(s=>s.mins/60));
  $("#sleepChart").innerHTML=l7.length?`<div class="bars">${l7.map(s=>`<div class="bar ${s.mins<420?"low":""}"><b>${hrs(s.mins)}</b><div style="height:${(s.mins/60)/max*100}%"></div></div>`).join("")}</div>
@@ -217,8 +253,42 @@ function render(){
  const j=S.journal[t];if(j&&!$("#jNote").value){$("#jNote").value=j.note;mood=j.mood}paintMood();
  const dates=Object.keys(S.journal).sort().reverse();
  $("#jList").innerHTML=dates.length?dates.map(d=>`<div class="item"><span style="font-size:24px">${MOODS[(S.journal[d].mood||3)-1]}</span><span class="name"><b>${d}</b><div class="mute">${esc(S.journal[d].note||"")}</div></span></div>`).join(""):'<div class="empty">Your entries will show up here.</div>';
+ renderFaith();
+}
+const VERSES=[["Philippians 4:13","I can do all things through Christ which strengtheneth me."],["Proverbs 3:5","Trust in the LORD with all thine heart; and lean not unto thine own understanding."],["Psalm 46:1","God is our refuge and strength, a very present help in trouble."],["Joshua 1:9","Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest."],["Isaiah 41:10","Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness."],["Matthew 6:33","But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you."],["Psalm 23:1","The LORD is my shepherd; I shall not want."],["Jeremiah 29:11","For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end."],["Romans 8:28","And we know that all things work together for good to them that love God, to them who are the called according to his purpose."],["Colossians 3:23","And whatsoever ye do, do it heartily, as to the Lord, and not unto men;"],["Psalm 119:105","Thy word is a lamp unto my feet, and a light unto my path."],["Matthew 11:28","Come unto me, all ye that labour and are heavy laden, and I will give you rest."],["1 Thessalonians 5:17-18","Pray without ceasing. In every thing give thanks: for this is the will of God in Christ Jesus concerning you."],["Galatians 6:9","And let us not be weary in well doing: for in due season we shall reap, if we faint not."]];
+$("#fRead").onclick=()=>{S.faith.read[today()]=$("#fPass").value.trim()||"Read";save()};
+$("#addPr").onclick=()=>{const n=$("#pr").value.trim();if(!n)return;S.faith.prayers.push({id:uid(),text:n,done:false});$("#pr").value="";save()};
+$("#saveGr").onclick=()=>{S.faith.grat[today()]=$("#gr").value;save()};
+function renderFaith(){
+ const v=VERSES[Math.floor(new Date(today()).getTime()/864e5)%VERSES.length],rd=S.faith.read;
+ $("#vRef").textContent=v[0];$("#vText").textContent="\u201c"+v[1]+"\u201d";
+ let n=0,d=new Date();if(!rd[iso(d)])d.setDate(d.getDate()-1);while(rd[iso(d)]){n++;d.setDate(d.getDate()-1)}
+ $("#fStreak").textContent=(rd[today()]?"Read today: "+rd[today()]+". ":"Not read yet today. ")+n+"-day reading streak.";
+ $("#prList").innerHTML=S.faith.prayers.length?S.faith.prayers.map(p=>`<div class="item"><input type="checkbox" class="chk" data-pr="${p.id}" ${p.done?"checked":""} aria-label="Answered"><span class="name" style="${p.done?"color:var(--mute)":""}">${esc(p.text)}${p.done?'<div class="mute">Answered. Praise God!</div>':""}</span><button class="x" data-delp="${p.id}" aria-label="Delete">\u00d7</button></div>`).join(""):'<div class="empty">Add the first thing you want to bring to God.</div>';
+ if(!$("#gr").value&&S.faith.grat[today()])$("#gr").value=S.faith.grat[today()];
+}
+function showWelcome(){const p=S.profile||{};$("#pName").value=p.name||"";$("#pEmail").value=p.email||"";$("#pFocus").value=p.focus||"today";$("#pOk").checked=!!p.name;$("#welcome").hidden=false}
+$("#pGo").onclick=()=>{
+ const name=$("#pName").value.trim(),email=$("#pEmail").value.trim(),err=m=>{$("#pErr").textContent=m};
+ if(!name)return err("Enter your first name.");
+ if(!/^\S+@\S+\.\S+$/.test(email))return err("Enter a valid email address.");
+ if(!$("#pOk").checked)return err("Tick the box to continue.");
+ const first=!S.profile;
+ S.profile={name,email,focus:$("#pFocus").value,joined:first?today():S.profile.joined};
+ err("");$("#welcome").hidden=true;save();
+ if(first&&FORM_ENDPOINT)fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({name,email,focus:S.profile.focus})}).catch(()=>{});
+ const b=document.querySelector(`nav button[data-t="${S.profile.focus}"]`);if(first&&b)b.click();
+};
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+async function unlock(){
+ let ok=false;try{ok=sessionStorage.getItem("nd.owner")==="1"}catch(e){}
+ if(!ok&&location.hash==="#owner"){const p=prompt("Owner passcode");if(p&&await sha(p)===OWNER_HASH){ok=true;try{sessionStorage.setItem("nd.owner","1")}catch(e){}}else if(p!==null)alert("Wrong passcode.")}
+ owner=ok;$("#navData").hidden=!ok;
+ if(ok&&(location.hash==="#owner"||location.hash==="#data"))$("#navData").click();
 }
 render();
+if(!S.profile)showWelcome();
+unlock();
 </script>
 </body>
 </html>
