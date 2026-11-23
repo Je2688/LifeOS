@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>No Distractions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eceff6;--card:#fff;--ink:#20244a;--mute:#6b7094;--line:#d9ddec;--acc:#5b4bdb;--acc-t:#e6e3fb;--sun:#f2a516;--ok:#2e9e6b}
-@media(prefers-color-scheme:dark){:root{--bg:#14162b;--card:#1d2040;--ink:#eceefb;--mute:#9a9fc8;--line:#2d3160;--acc:#8b7dff;--acc-t:#2b2859;--sun:#f5b73c;--ok:#4cc38a}}
+:root{color-scheme:dark;--bg:#050806;--card:#0d130f;--ink:#e9f5ec;--mute:#86a08f;--line:#1c2b21;--acc:#22c55e;--acc-t:#0f2a1a;--sun:#d9a441;--ok:#22c55e;--gold:#4ade80;--cream:#0f1d14;--goldl:#14532d}
+
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font-family:"Bricolage Grotesque",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;display:flex;min-height:100vh}
@@ -68,6 +68,35 @@ textarea{width:100%;min-height:90px;resize:vertical}
  main{padding:24px 16px 100px}h2{font-size:28px}
 }
 @media(prefers-reduced-motion:no-preference){.prog div{transition:width .3s}}
+body{font-family:"DM Sans",system-ui,sans-serif;background:radial-gradient(900px 520px at 85% -5%,var(--acc-t),transparent 70%),var(--bg);background-attachment:fixed}
+h2,.big,nav h1,.wcard h1,.verse p{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em}
+nav{width:216px;border-right:1px solid var(--line);background:color-mix(in srgb,var(--card) 70%,transparent);backdrop-filter:blur(8px)}
+nav h1{font-size:24px}
+nav button{display:flex;align-items:center;gap:12px;font-weight:500}
+nav button[hidden]{display:none}
+nav button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+nav button.on{background:var(--acc-t);color:var(--acc);font-weight:700}
+main{max-width:920px;padding:44px 40px 90px}
+h2{font-size:42px;line-height:1.1}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:6px}
+.card{box-shadow:0 10px 30px -16px rgba(70,45,160,.3);border-radius:20px;padding:22px;margin-bottom:18px}
+.big{font-size:38px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.stats .card{margin:0;padding:18px}
+.stats i{display:block;height:3px;border-radius:3px;background:var(--acc);margin-top:12px;width:var(--w,0%);transition:width .5s}
+.verse{background:linear-gradient(135deg,var(--cream),var(--card));border-color:var(--goldl)}
+.verse p{font-size:24px;line-height:1.35;margin:6px 0 12px}
+.verse h3{color:var(--gold);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin:0}
+.btn{border-radius:12px;box-shadow:0 8px 18px -10px var(--acc)}.btn.ghost{box-shadow:none}
+.chk{appearance:none;-webkit-appearance:none;width:26px;height:26px;flex-shrink:0;border:2px solid var(--line);border-radius:50%;display:grid;place-content:center;background:var(--card);transition:.2s}
+.chk:checked{background:var(--ok);border-color:var(--ok)}
+.chk:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.bar div{background:linear-gradient(var(--acc),color-mix(in srgb,var(--acc) 55%,transparent))}
+.bar.low div{background:var(--sun)}
+@keyframes pop{50%{transform:scale(1.25)}}
+@media(prefers-reduced-motion:no-preference){.chk:checked{animation:pop .3s}.card{transition:transform .2s}.card:hover{transform:translateY(-2px)}}
+@media(max-width:720px){nav{width:100%;border-right:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}nav button{flex:1;flex-direction:column;gap:3px;font-size:11px;padding:8px 2px;justify-content:center;border-radius:12px}nav button svg{width:22px;height:22px}main{padding:28px 18px 110px}h2{font-size:32px}}
+.btn{color:#04130a}.card{box-shadow:0 10px 30px -16px rgba(0,0,0,.9)}
 </style>
 </head>
 <body>
@@ -110,7 +139,7 @@ textarea{width:100%;min-height:90px;resize:vertical}
 
 <section id="faith">
  <h2>Faith</h2><p class="sub">Spend a little time with God each day.</p>
- <div class="card"><h3 id="vRef"></h3><p id="vText" style="font-size:19px;margin:0"></p><p class="mute">King James Version</p></div>
+ <div class="card verse"><div class="eyebrow">Verse of the day</div><p id="vText"></p><h3 id="vRef"></h3></div>
  <div class="card"><h3>Today's reading</h3><div class="row"><input id="fPass" placeholder="e.g. John 3" style="flex:1"><button class="btn" id="fRead">Mark as read</button></div><p class="mute" id="fStreak"></p></div>
  <div class="card"><h3>Prayer list</h3><div class="row"><input id="pr" placeholder="Who or what are you praying for?" style="flex:1"><button class="btn" id="addPr">Add prayer</button></div><div id="prList"></div></div>
  <div class="card"><h3>Gratitude</h3><textarea id="gr" placeholder="What are you thankful to God for today?"></textarea><br><br><button class="btn" id="saveGr">Save gratitude</button></div>
@@ -152,9 +181,13 @@ const KEY="lifeos.v1";
 const OWNER_HASH="9a121fc874029e54c9a5cdc28436af9787e1b2351bc8236a3f88b105b0c08f45";
 // Optional: paste a Formspree URL (https://formspree.io/f/xxxx) to receive sign-ups by email.
 const FORM_ENDPOINT="";
+// EmailJS (emailjs.com): paste your Service ID, Template ID and Public Key to turn on emails.
+const EMAILJS={service:"",template:"",key:""};
 let owner=false;
 const MOODS=["😞","😕","😐","🙂","😄"];
 const $=s=>document.querySelector(s);
+const IC={today:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',sleep:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',routines:'<path d="M5 12l5 5L20 7"/>',goals:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',faith:'<path d="M12 2v20M6 8h12"/>',journal:'<path d="M5 3h12a2 2 0 0 1 2 2v16H7a2 2 0 0 1-2-2zM9 7h6"/>',data:'<path d="M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zm0 0v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>'};
+document.querySelectorAll("nav button").forEach(b=>{b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+IC[b.dataset.t]+'</svg><span>'+b.textContent+'</span>'});
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const today=()=>iso(new Date());
 const uid=()=>Math.random().toString(36).slice(2,9);
@@ -227,14 +260,17 @@ function render(){
  const doneN=S.routines.filter(r=>r.done[t]).length;
  const avgG=S.goals.length?Math.round(S.goals.reduce((a,g)=>a+g.p,0)/S.goals.length):0;
  const h=new Date().getHours(),greet=h<12?"Good morning":h<18?"Good afternoon":"Good evening";
- $("#today").innerHTML=`<h2>${greet}, ${esc(S.profile?S.profile.name:"friend")}</h2><p class="sub">${new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</p>
- <div class="grid">
-  <div class="card"><div class="mute">Last sleep</div><div class="big">${ls?hrs(ls.mins)+"h":"–"}</div><div class="mute">${ls?"Quality "+ls.q+"/5":"Nothing logged yet"}</div></div>
-  <div class="card"><div class="mute">Routines today</div><div class="big">${doneN}/${S.routines.length}</div><div class="mute">completed</div></div>
-  <div class="card"><div class="mute">Goal progress</div><div class="big">${avgG}%</div><div class="mute">${S.goals.length} active goal${S.goals.length==1?"":"s"}</div></div>
- </div><br>
+ $("#today").innerHTML=`<div class="eyebrow">${new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</div><h2>${greet}, ${esc(S.profile?S.profile.name:"friend")}.</h2><p class="sub">Here's your day at a glance.</p>
+ <div class="stats">
+  <div class="card"><div class="mute">Last sleep</div><div class="big">${ls?hrs(ls.mins)+"h":"–"}</div><i style="--w:${ls?Math.min(100,ls.mins/4.8):0}%"></i></div>
+  <div class="card"><div class="mute">Routines today</div><div class="big">${doneN}/${S.routines.length}</div><i style="--w:${S.routines.length?doneN/S.routines.length*100:0}%"></i></div>
+  <div class="card"><div class="mute">Best streak</div><div class="big">${Math.max(0,...S.routines.map(r=>streak(r)))}d</div><i style="--w:${Math.min(100,Math.max(0,...S.routines.map(r=>streak(r)))*10)}%"></i></div>
+  <div class="card"><div class="mute">Goal progress</div><div class="big">${avgG}%</div><i style="--w:${avgG}%"></i></div>
+ </div>
+ <div class="card verse"><div class="eyebrow">Verse of the day</div><p>\u201c${todayVerse()[1]}\u201d</p><h3>${todayVerse()[0]} \u00b7 KJV</h3></div>
+ <div class="card"><h3>This week</h3>${weekBars()}</div>
  <div class="card"><h3>Today's routines</h3>${S.routines.length?S.routines.map(routineRow).join(""):'<div class="empty">No routines yet. Add one in the Routines tab.</div>'}</div>
- <button class="btn ghost" id="editProfile">Edit profile</button>`;
+ <div class="row"><button class="btn ghost" id="mailMe">Email me my weekly summary</button><button class="btn ghost" id="editProfile">Edit profile</button></div>`;
 
  const l7=S.sleep.slice(-7),max=Math.max(10,...l7.map(s=>s.mins/60));
  $("#sleepChart").innerHTML=l7.length?`<div class="bars">${l7.map(s=>`<div class="bar ${s.mins<420?"low":""}"><b>${hrs(s.mins)}</b><div style="height:${(s.mins/60)/max*100}%"></div></div>`).join("")}</div>
@@ -276,6 +312,7 @@ $("#pGo").onclick=()=>{
  const first=!S.profile;
  S.profile={name,email,focus:$("#pFocus").value,joined:first?today():S.profile.joined};
  err("");$("#welcome").hidden=true;save();
+ if(first)sendMail(email,name,"Welcome to No Distractions","Welcome, "+name+"! Your space for sleep, routines, goals and faith is ready: "+location.href.split("#")[0]);
  if(first&&FORM_ENDPOINT)fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({name,email,focus:S.profile.focus})}).catch(()=>{});
  const b=document.querySelector(`nav button[data-t="${S.profile.focus}"]`);if(first&&b)b.click();
 };
@@ -286,6 +323,24 @@ async function unlock(){
  owner=ok;$("#navData").hidden=!ok;
  if(ok&&(location.hash==="#owner"||location.hash==="#data"))$("#navData").click();
 }
+const todayVerse=()=>VERSES[Math.floor(new Date(today()).getTime()/864e5)%VERSES.length];
+function weekBars(){const days=last7(),n=S.routines.length;if(!n)return '<div class="empty">Add routines to see your weekly progress.</div>';
+ return `<div class="bars">${days.map(d=>{const p=Math.round(S.routines.filter(r=>r.done[d]).length/n*100);return `<div class="bar ${p<50?"low":""}"><b>${p}%</b><div style="height:${Math.max(p,3)}%"></div></div>`}).join("")}</div><div class="days">${days.map(d=>`<span>${dayName(d)}</span>`).join("")}</div>`}
+async function sendMail(to,name,subject,message){
+ if(!EMAILJS.service)return false;
+ try{const r=await fetch("https://api.emailjs.com/api/v1.0/email/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({service_id:EMAILJS.service,template_id:EMAILJS.template,user_id:EMAILJS.key,template_params:{to_email:to,to_name:name,subject,message}})});return r.ok}catch(e){return false}
+}
+function summary(){const days=last7(),l7=S.sleep.slice(-7);
+ const avg=l7.length?hrs(l7.reduce((a,s)=>a+s.mins,0)/l7.length)+" hours":"nothing logged";
+ const rt=S.routines.map(r=>`- ${r.name}: ${days.filter(d=>r.done[d]).length}/7 days`).join("\n")||"- none yet";
+ const gl=S.goals.map(g=>`- ${g.name}: ${g.p}%`).join("\n")||"- none yet";
+ return `Here is your week, ${S.profile.name}.\n\nAverage sleep: ${avg}\n\nRoutines:\n${rt}\n\nGoals:\n${gl}\n\nDays in the Word: ${days.filter(d=>S.faith.read[d]).length}/7\n\nKeep going. No distractions.`}
+document.addEventListener("click",async e=>{
+ if(e.target.id!=="mailMe"||!S.profile)return;
+ e.target.disabled=true;
+ const ok=await sendMail(S.profile.email,S.profile.name,"Your week on No Distractions",summary());
+ e.target.disabled=false;alert(ok?"Sent! Check your inbox.":"Email isn't set up yet, or it failed to send.");
+});
 render();
 if(!S.profile)showWelcome();
 unlock();
